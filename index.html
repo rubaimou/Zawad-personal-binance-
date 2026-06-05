@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zawad Personal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* লক স্ক্রিন স্টাইল */
+        #lockScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #lockScreen input {
+            padding: 12px; font-size: 16px; border: none; border-radius: 4px;
+            margin-bottom: 15px; width: 100%; max-width: 280px; text-align: center; outline: none;
+        }
+
+        #lockScreen button {
+            background-color: #27ae60; color: white; border: none; padding: 12px 30px;
+            font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; max-width: 280px;
+        }
+
+        /* মেইন ড্যাশবোর্ড */
+        #mainDashboard {
+            display: none; width: 100%; max-width: 950px; flex-direction: column; align-items: center;
+        }
+
+        h2, h3 { color: #2c3e50; text-align: center; }
+        h2 { font-size: 1.5rem; margin-bottom: 20px; }
+        h3 { font-size: 1.2rem; margin-top: 25px; }
+
+        /* মোবাইল রেসপন্সিভ ফর্ম */
+        .input-container {
+            background-color: #fff; padding: 15px; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; box-sizing: border-box;
+        }
+
+        .input-container input {
+            padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; width: 100%; box-sizing: border-box;
+        }
+
+        #dateInput { grid-column: span 2; }
+        #nameInput { grid-column: span 1; }
+        #tokenInput { grid-column: span 1; }
+        #expenseInput { grid-column: span 1; }
+        #incomeInput { grid-column: span 1; }
+        
+        .input-container button {
+            grid-column: span 2; background-color: #3498db; color: white; border: none;
+            padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px;
+        }
+
+        /* রিপোর্ট বাটন */
+        .report-trigger-btn {
+            background-color: #9b59b6; color: white; border: none; padding: 12px 25px;
+            border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; width: 100%; box-sizing: border-box;
+        }
+        .report-trigger-btn:hover { background-color: #8e44ad; }
+
+        @media (min-width: 768px) {
+            .input-container { display: flex; flex-wrap: nowrap; }
+            .input-container input { width: auto; flex-grow: 1; }
+            #dateInput { width: 160px; }
+            .input-container button { width: auto; grid-column: auto; padding: 0 25px; }
+            .report-trigger-btn { width: auto; }
+            h2 { font-size: 2rem; }
+        }
+
+        /* কলাপসিবল সেকশন */
+        .collapsible-header {
+            background-color: #2c3e50; color: white; padding: 14px 15px; width: 100%;
+            display: flex; justify-content: space-between; align-items: center; border-radius: 6px;
+            cursor: pointer; margin-top: 15px; font-weight: bold; user-select: none; box-sizing: border-box; font-size: 14px;
+        }
+        .collapsible-header:hover { background-color: #34495e; }
+        .arrow { transition: transform 0.2s; font-size: 12px; }
+        .arrow.collapsed { transform: rotate(-90deg); }
+
+        .collapsible-content { width: 100%; max-height: 5000px; overflow: hidden; transition: max-height 0.3s ease-out; margin-bottom: 10px; }
+        .collapsible-content.hidden { max-height: 0 !important; margin-bottom: 0; }
+
+        /* টেবিল স্টাইল */
+        .table-container {
+            width: 100%; background-color: #fff; border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; border-top: none; overflow-x: auto; -webkit-overflow-scrolling: touch;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 700px; }
+        th, td { padding: 10px 12px; border: 1px solid #e0e0e0; font-size: 14px; white-space: nowrap; }
+        th { background-color: #34495e; color: white; font-weight: 600; }
+        .summary-header { background-color: #27ae60; }
+        .summary-header:hover { background-color: #2ecc71; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        /* নোট এডিটর */
+        .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 150px; outline: none; white-space: normal; }
+        .editable-note:focus { background-color: #fff; border: 2px solid #3498db !important; font-style: normal; color: #000; }
+
+        .delete-btn { background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .profit { color: #27ae60; font-weight: bold; }
+        .loss { color: #c0392b; font-weight: bold; }
+        .neutral { color: #7f8c8d; font-weight: bold; }
+
+        /* পপ-আপ মডেল স্টাইল */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: white; border-radius: 8px; padding: 20px; width: 100%; max-width: 750px;
+            max-height: 95%; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .modal-inputs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: #eee; padding: 10px; border-radius: 6px; }
+        .modal-inputs input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1; min-width: 120px; }
+        .modal-inputs button { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        #reportCaptureArea { background: white; padding: 20px; border: 1px solid #ddd; border-radius: 6px; margin-top: 10px; width: 100%; box-sizing: border-box; }
+        .capture-table-container { width: 100%; overflow-x: visible; background-color: #fff; }
+        .capture-table-container table { width: 100%; min-width: 100%; table-layout: auto; }
+        .watermark-footer { margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 10px; font-size: 12px; color: #7f8c8d; text-align: center; }
+        
+        #loadingView { display: none; text-align: center; color: #34495e; font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+    <div id="lockScreen">
+        <h3 style="color: white; margin-bottom: 20px;">🔐 এই ওয়েবসাইটটি পাসওয়ার্ড দ্বারা সুরক্ষিত</h3>
+        <input type="password" id="passInput" placeholder="পাসওয়ার্ড দিন...">
+        <button id="lockBtn">আনলক করুন</button>
+    </div>
+
+    <div id="mainDashboard">
+        <h2>📊 নিখুঁত ক্লাউড হিসাব খাতা</h2>
+
+        <div class="input-container">
+            <input type="date" id="dateInput">
+            <input type="text" id="nameInput" placeholder="নাম (যেমন: রহিম)">
+            <input type="text" id="tokenInput" placeholder="টোকেন নাম">
+            <input type="number" id="expenseInput" placeholder="খরচ" step="any" min="0">
+            <input type="number" id="incomeInput" placeholder="উপার্জন" step="any" min="0">
+            <button id="addBtn">এন্ট্রি করুন</button>
+        </div>
+
+        <div id="loadingView">⏳ ক্লাউড ডাটাবেজ আপডেট হচ্ছে...</div>
+
+        <button class="report-trigger-btn" id="openReportBtn">📋 নাম ও তারিখ অনুযায়ী রিপোর্ট ডাউনলোড</button>
+
+        <div id="dateTablesContainer" style="width: 100%;"></div>
+
+        <div class="collapsible-header summary-header" id="summaryHeader">
+            <span>👥 নাম অনুযায়ী মোট হিসাব (Total Summary)</span>
+            <span class="arrow">▲</span>
+        </div>
+        <div id="summaryContent" class="collapsible-content">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>নাম</th>
+                            <th>মোট খরচ</th>
+                            <th>মোট উপার্জন</th>
+                            <th>মোট লাভ / ক্ষতি</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryBody">
+                        <tr><td colspan="4" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin: 0; color: #2c3e50;">📊 ফিল্টারড স্টেটমেন্ট জেনারেটর</h4>
+                <button id="closeReportBtn" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">বন্ধ করুন</button>
+            </div>
+            
+            <div class="modal-inputs">
+                <input type="text" id="filterName" placeholder="কার নাম? (যেমন: রহিম)">
+                <input type="date" id="filterStartDate" placeholder="শুরুর তারিখ">
+                <input type="date" id="filterEndDate" placeholder="শেষের তারিখ">
+                <button id="filterSubmitBtn">রিপোর্ট দেখান</button>
+            </div>
+
+            <div id="reportCaptureArea">
+                <h3 id="reportTitle" style="margin-top:0; text-align:center; color:#2c3e50;">ট্রেড রিপোর্ট বিবরণ</h3>
+                <p id="reportMeta" style="text-align:center; font-size:13px; color:#555; margin-bottom:15px;"></p>
+                
+                <div class="capture-table-container">
+                    <table border="1" style="border-collapse: collapse; border: 1px solid #e0e0e0;">
+                        <thead>
+                            <tr>
+                                <th>তারিখ</th>
+                                <th>টোকেন</th>
+                                <th>খরচ</th>
+                                <th>উপার্জন</th>
+                                <th>লাভ/ক্ষতি</th>
+                                <th>নোট</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr><td colspan="6" style="text-align:center; color:#7f8c8d;">দয়া করে উপরে নাম ও তারিখ দিয়ে ফিল্টার করুন</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="watermark-footer">
+                    <span style="font-weight: bold; color: #34495e;">Kemon Ache Website</span><br>
+                    <span id="watermarkTime"></span>
+                </div>
+            </div>
+
+            <button id="downloadReportBtn" style="display:none; width:100%; background-color:#9b59b6; color:white; border:none; padding:12px; margin-top:15px; border-radius:6px; font-weight:bold; font-size:16px; cursor:pointer;">📥 ছবি হিসেবে গ্যালারিতে সেভ করুন</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+        // আপনার ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyBnDFjFHKoiNQ56O2dbTQZB1VpzDpbq0V8",
+            authDomain: "zawadown.firebaseapp.com",
+            databaseURL: "https://zawadown-default-rtdb.firebaseio.com",
+            projectId: "zawadown",
+            storageBucket: "zawadown.firebasestorage.app",
+            messagingSenderId: "692492928721",
+            appId: "1:692492928721:web:ffab5db3ae0ca0d7a8e7f0",
+            measurementId: "G-YDZHC633VN"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbRef = ref(db, "hisab_khata");
+
+        let allData = [];
+
+        // পাসওয়ার্ড এবং আনলক লজিক (ইভেন্ট লিসেনার দিয়ে ফিক্সড করা হলো)
+        document.getElementById('lockBtn').addEventListener('click', checkPassword);
+        document.getElementById('passInput').addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') checkPassword();
+        });
+
+        function checkPassword() {
+            const passwordInput = document.getElementById('passInput').value;
+            const correctPassword = "zawad0001";
+            if (passwordInput === correctPassword) {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'flex';
+                document.getElementById('dateInput').valueAsDate = new Date();
+                loadCloudData();
+            } else {
+                alert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
+            }
+        }
+
+        function strip(num) { return parseFloat(num.toPrecision(12)); }
+
+        // ফায়ারবেস থেকে ডাটা রিড করা
+        function loadCloudData() {
+            document.getElementById('loadingView').style.display = 'block';
+            onValue(dbRef, (snapshot) => {
+                allData = [];
+                const data = snapshot.val();
+                if (data) {
+                    for (let key in data) {
+                        allData.push({ id: key, ...data[key] });
+                    }
+                }
+                renderAll();
+                document.getElementById('loadingView').style.display = 'none';
+            });
+        }
+
+        // এন্ট্রি বাটন লিসেনার
+        document.getElementById('addBtn').addEventListener('click', () => {
+            const date = document.getElementById('dateInput').value;
+            const name = document.getElementById('nameInput').value.trim();
+            const token = document.getElementById('tokenInput').value.trim();
+            const expenseText = document.getElementById('expenseInput').value;
+            const incomeText = document.getElementById('incomeInput').value;
+
+            if (!date || name === "" || token === "") {
+                alert("দয়া করে তারিখ, নাম এবং টোকেনের নাম সঠিকভাবে দিন!");
+                return;
+            }
+
+            const expense = parseFloat(expenseText) || 0;
+            const income = parseFloat(incomeText) || 0;
+
+            const newEntryRef = push(dbRef);
+            set(newEntryRef, {
+                date: date,
+                name: name,
+                token: token,
+                expense: expense,
+                income: income,
+                note: "ক্লিক করে নোট লিখুন..."
+            }).then(() => {
+                document.getElementById('nameInput').value = "";
+                document.getElementById('tokenInput').value = "";
+                document.getElementById('expenseInput').value = "";
+                document.getElementById('incomeInput').value = "";
+            }).catch(err => alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err));
+        });
+
+        // গ্লোবাল ফাংশন ম্যাপিং (যাতে ডাইনামিক HTML থেকে কল করা যায়)
+        window.deleteEntry = function(id) {
+            if(confirm("আপনি কি নিশ্চিতভাবে এই এন্ট্রিটি মুছতে চান?")) {
+                const itemRef = ref(db, `hisab_khata/${id}`);
+                remove(itemRef);
+            }
+        }
+
+        window.updateNote = function(id, updatedText) {
+            const itemRef = ref(db, `hisab_khata/${id}`);
+            update(itemRef, { note: updatedText });
+        }
+
+        window.toggleSection = function(contentId, headerElement) {
+            const content = document.getElementById(contentId);
+            const arrow = headerElement.querySelector('.arrow');
+            content.classList.toggle('hidden');
+            arrow.classList.toggle('collapsed');
+            arrow.innerText = arrow.classList.contains('collapsed') ? "▼" : "▲";
+        }
+
+        function renderAll() { renderDateTables(); renderSummaryTable(); }
+
+        function renderDateTables() {
+            const container = document.getElementById('dateTablesContainer');
+            const collapsedStates = {};
+            document.querySelectorAll('.date-content').forEach(el => {
+                if(el.classList.contains('hidden')) { collapsedStates[el.id.replace('content-', '')] = true; }
+            });
+            container.innerHTML = "";
+
+            const groupedByDate = {};
+            allData.forEach(item => {
+                if (!groupedByDate[item.date]) groupedByDate[item.date] = [];
+                groupedByDate[item.date].push(item);
+            });
+
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+
+            sortedDates.forEach(date => {
+                const formattedDate = new Date(date).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+                const isCollapsed = collapsedStates[date] || false;
+                
+                const header = document.createElement('div');
+                header.className = "collapsible-header";
+                header.setAttribute('onclick', `toggleSection('content-${date}', this)`);
+                header.innerHTML = `
+                    <span>📅 তারিখ: ${formattedDate} (${groupedByDate[date].length} টি)</span>
+                    <span class="arrow ${isCollapsed ? 'collapsed' : ''}">${isCollapsed ? '▼' : '▲'}</span>
+                `;
+
+                const contentDiv = document.createElement('div');
+                contentDiv.id = `content-${date}`;
+                contentDiv.className = `collapsible-content date-content ${isCollapsed ? 'hidden' : ''}`;
+
+                let tableRows = "";
+                groupedByDate[date].forEach(item => {
+                    const netResult = strip(item.income - item.expense);
+                    let resultText = netResult > 0 ? `+${netResult}` : `${netResult}`;
+                    let resultClass = netResult > 0 ? "profit" : netResult < 0 ? "loss" : "neutral";
+
+                    tableRows += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.token}</td>
+                            <td>${item.expense}</td>
+                            <td>${item.income}</td>
+                            <td class="${resultClass}">${resultText}</td>
+                            <td class="editable-note" contenteditable="true" onblur="updateNote('${item.id}', this.innerText)" onkeydown="if(event.key === 'Enter') { event.preventDefault(); this.blur(); }">${item.note}</td>
+                            <td><button class="delete-btn" onclick="deleteEntry('${item.id}')">মুছুন</button></td>
+                        </tr>
+                    `;
+                });
+
+                contentDiv.innerHTML = `<div class="table-container"><table><thead><tr><th>নাম</th><th>টোকেন</th><th>খরচ</th><th>উপার্জন</th><th>লাভ/ক্ষতি</th><th>নোট (এডিটেবল)</th><th>অ্যাকশন</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
+                container.appendChild(header);
+                container.appendChild(contentDiv);
+            });
+        }
+
+        function renderSummaryTable() {
+            const summaryBody = document.getElementById('summaryBody');
+            const summaryMap = {};
+            allData.forEach(item => {
+                const lowerName = item.name.toLowerCase();
+                if (!summaryMap[lowerName]) { summaryMap[lowerName] = { originalName: item.name, totalExpense: 0, totalIncome: 0 }; }
+                summaryMap[lowerName].totalExpense = strip(summaryMap[lowerName].totalExpense + item.expense);
+                summaryMap[lowerName].totalIncome = strip(summaryMap[lowerName].totalIncome + item.income);
+            });
+            summaryBody.innerHTML = "";
+            const keys = Object.keys(summaryMap);
+            if (keys.length === 0) {
+                summaryBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>`;
+                return;
+            }
+            keys.forEach(key => {
+                const user = summaryMap[key];
+                const netSummary = strip(user.totalIncome - user.totalExpense);
+                let sumText = netSummary > 0 ? `+${netSummary}` : `${netSummary}`;
+                let sumClass = netSummary > 0 ? "profit" : netSummary < 0 ? "loss" : "neutral";
+
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${user.originalName}</td><td>${user.totalExpense}</td><td>${user.totalIncome}</td><td class="${sumClass}">${sumText}</td>`;
+                summaryBody.appendChild(row);
+            });
+        }
+
+        // মডেল ও সামারি কন্ট্রোল ট্র্রিগারস
+        document.getElementById('openReportBtn').addEventListener('click', () => document.getElementById('reportModal').style.display = 'flex');
+        document.getElementById('closeReportBtn').addEventListener('click', () => document.getElementById('reportModal').style.display = 'none');
+        document.getElementById('summaryHeader').addEventListener('click', function() { toggleSection('summaryContent', this); });
+
+        // ফিল্টারড রিপোর্ট জেনারেশন
+        document.getElementById('filterSubmitBtn').addEventListener('click', () => {
+            const fName = document.getElementById('filterName').value.trim().toLowerCase();
+            const sDate = document.getElementById('filterStartDate').value;
+            const eDate = document.getElementById('filterEndDate').value;
+            const tbody = document.getElementById('reportTableBody');
+
+            if (!fName) { alert("দয়া করে একটি নাম টাইপ করুন!"); return; }
+
+            const filtered = allData.filter(item => {
+                const matchName = item.name.toLowerCase() === fName;
+                const matchStart = sDate ? item.date >= sDate : true;
+                const matchEnd = eDate ? item.date <= eDate : true;
+                return matchName && matchStart && matchEnd;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#e74c3c;">এই ফিল্টারে কোনো ডাটা পাওয়া যায়নি!</td></tr>`;
+                document.getElementById('downloadReportBtn').style.display = 'none';
+                return;
+            }
+
+            let rowsHtml = "";
+            let totalExp = 0; let totalInc = 0;
+
+            filtered.forEach(item => {
+                totalExp += item.expense; totalInc += item.income;
+                const net = strip(item.income - item.expense);
+                const rClass = net > 0 ? "profit" : net < 0 ? "loss" : "neutral";
+                const rText = net > 0 ? `+${net}` : `${net}`;
+                
+                rowsHtml += `<tr><td>${item.date}</td><td>${item.token}</td><td>${item.expense}</td><td>${item.income}</td><td class="${rClass}">${rText}</td><td style="white-space:normal;">${item.note}</td></tr>`;
+            });
+
+            const netTotal = strip(totalInc - totalExp);
+            const totalClass = netTotal > 0 ? "profit" : netTotal < 0 ? "loss" : "neutral";
+            const totalText = netTotal > 0 ? `+${netTotal}` : `${netTotal}`;
+
+            rowsHtml += `<tr style="background:#eaeded; font-weight:bold;"><td colspan="2" style="text-align:right;">সর্বমোট হিসাব:</td><td>${strip(totalExp)}</td><td>${strip(totalInc)}</td><td class="${totalClass}">${totalText}</td><td>-</td></tr>`;
+
+            tbody.innerHTML = rowsHtml;
+
+            document.getElementById('reportTitle').innerText = `👤 ${filtered[0].name} - এর ট্রেড স্টেটমেন্ট`;
+            document.getElementById('reportMeta').innerText = `তারিখ রেঞ্জ: ${sDate || 'শুরু'} হতে ${eDate || 'আজ পর্যন্ত'}`;
+            
+            const now = new Date();
+            document.getElementById('watermarkTime').innerText = `রিপোর্ট জেনারেশনের সময়: ${now.toLocaleDateString('bn-BD')} | ${now.toLocaleTimeString('bn-BD')}`;
+
+            document.getElementById('downloadReportBtn').style.display = 'block';
+        });
+
+        // ইমেজ ডাউনলোড লজিক
+        document.getElementById('downloadReportBtn').addEventListener('click', () => {
+            const targetArea = document.getElementById('reportCaptureArea');
+            const downloadBtn = document.getElementById('downloadReportBtn');
+            
+            downloadBtn.innerText = "প্রোসেস হচ্ছে...";
+            downloadBtn.disabled = true;
+
+            html2canvas(targetArea, {
+                useCORS: true,
+                scale: 2,
+                scrollY: -window.scrollY,
+                windowWidth: targetArea.scrollWidth,
+                windowHeight: targetArea.scrollHeight
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                const name = document.getElementById('filterName').value.trim();
+                
+                link.download = `${name}_full_report.png`;
+                link.href = image;
+                link.click();
+
+                downloadBtn.innerText = "📥 ছবি হিসেবে গ্যালারিতে সেভ করুন";
+                downloadBtn.disabled = false;
+            }).catch(err => {
+                alert("ছবি ডাউনলোডে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+                downloadBtn.innerText = "📥 ছবি হিসেবে গ্যালারিতে সেভ করুন";
+                downloadBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
