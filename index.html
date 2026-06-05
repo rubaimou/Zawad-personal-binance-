@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zawad Personal</title>
+    <title>জাওয়াদ পার্সোনাল হিসাব</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
@@ -154,7 +154,7 @@
     </div>
 
     <div id="mainDashboard">
-        <h2>📊 নিখুঁত ক্লাউড হিসাব খাতা</h2>
+        <h2>📊 জাওয়াদ পার্সোনাল হিসাব</h2>
 
         <div class="input-container">
             <input type="date" id="dateInput">
@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="watermark-footer">
-                    <span style="font-weight: bold; color: #34495e;">Kemon Ache Website</span><br>
+                    <span style="font-weight: bold; color: #34495e;">https://zawadpersonal.vercel.app/</span><br>
                     <span id="watermarkTime"></span>
                 </div>
             </div>
@@ -262,7 +262,7 @@
 
         let allData = [];
 
-        // পাসওয়ার্ড এবং আনলক লজিক (ইভেন্ট লিসেনার দিয়ে ফিক্সড করা হলো)
+        // পাসওয়ার্ড এবং আনলক লজিক
         document.getElementById('lockBtn').addEventListener('click', checkPassword);
         document.getElementById('passInput').addEventListener('keydown', (e) => {
             if(e.key === 'Enter') checkPassword();
@@ -331,7 +331,7 @@
             }).catch(err => alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err));
         });
 
-        // গ্লোবাল ফাংশন ম্যাপিং (যাতে ডাইনামিক HTML থেকে কল করা যায়)
+        // গ্লোবাল ফাংশন ম্যাপিং
         window.deleteEntry = function(id) {
             if(confirm("আপনি কি নিশ্চিতভাবে এই এন্ট্রিটি মুছতে চান?")) {
                 const itemRef = ref(db, `hisab_khata/${id}`);
