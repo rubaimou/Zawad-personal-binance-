@@ -44,7 +44,7 @@
 
         /* মেইন ড্যাশবোর্ড */
         #mainDashboard {
-            display: none; width: 100%; max-width: 1050px; flex-direction: column; align-items: center;
+            display: none; width: 100%; max-width: 1100px; flex-direction: column; align-items: center;
         }
 
         h2, h3 { color: #2c3e50; text-align: center; }
@@ -108,32 +108,35 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; border-top: none; overflow-x: auto; -webkit-overflow-scrolling: touch;
         }
 
-        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 900px; }
-        th, td { padding: 10px 12px; border: 1px solid #e0e0e0; font-size: 14px; white-space: nowrap; vertical-align: middle; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 950px; }
+        th, td { padding: 12px 14px; border: 1px solid #e0e0e0; font-size: 14px; white-space: nowrap; vertical-align: middle; }
         th { background-color: #34495e; color: white; font-weight: 600; }
         .summary-header { background-color: #27ae60; }
         .summary-header:hover { background-color: #2ecc71; }
         tr:nth-child(even) { background-color: #f9f9f9; }
 
         /* নোট ও অ্যাকাউন্ট হোল্ডার এডিটর এলিমেন্টস */
-        .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 130px; outline: none; white-space: normal; }
+        .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 140px; outline: none; white-space: normal; border: 1px dashed #f39c12; border-radius: 4px; padding: 6px; }
         .editable-note:focus { background-color: #fff; border: 2px solid #3498db !important; font-style: normal; color: #000; }
 
         /* অ্যাকাউন্ট হোল্ডার কাস্টম স্টাইলস */
-        .holder-cell { background-color: #f0f7f4; display: flex; flex-direction: column; gap: 5px; min-width: 130px; }
-        .holder-status { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; }
+        .holder-cell { background-color: #f0f7f4; display: flex; flex-direction: column; gap: 5px; min-width: 140px; border-radius: 4px; }
+        .holder-status { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; cursor: pointer; }
         .status-paid { background-color: #d4edda; color: #155724; }
         .status-notpaid { background-color: #f8d7da; color: #721c24; }
-        .holder-amount { padding: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; width: 90%; outline: none; }
+        .holder-amount { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; width: 90%; outline: none; }
 
         /* অ্যাকশন বাটনস */
-        .action-btns { display: flex; gap: 5px; }
-        .delete-btn { background-color: #e74c3c; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .edit-row-btn { background-color: #f39c12; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .save-row-btn { background-color: #27ae60; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .action-btns { display: flex; gap: 6px; }
+        .delete-btn { background-color: #e74c3c; color: white; border: none; padding: 7px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .delete-btn:hover { background-color: #c0392b; }
+        .edit-row-btn { background-color: #f39c12; color: white; border: none; padding: 7px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .edit-row-btn:hover { background-color: #d35400; }
+        .save-row-btn { background-color: #27ae60; color: white; border: none; padding: 7px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .save-row-btn:hover { background-color: #219653; }
 
         /* ইন-লাইন রো এডিটিং ইনপুটস */
-        .row-edit-input { padding: 6px; border: 1px solid #3498db; border-radius: 4px; width: 90%; font-size: 13px; outline: none; }
+        .row-edit-input { padding: 6px; border: 1px solid #3498db; border-radius: 4px; width: 85%; font-size: 13px; outline: none; }
 
         .profit { color: #27ae60; font-weight: bold; }
         .loss { color: #c0392b; font-weight: bold; }
@@ -172,7 +175,7 @@
     </div>
 
     <div id="mainDashboard">
-        <h2>📊 জাওয়াদ পার্সোনাল হিসাব</h2>
+        <h2>📊 ஜাওয়াদ পার্সোনাল হিসাব</h2>
 
         <div class="input-container">
             <input type="date" id="dateInput">
@@ -464,6 +467,7 @@
                     const selectClass = item.paidStatus === 'paid' ? 'status-paid' : 'status-notpaid';
 
                     if (editingRowId === item.id) {
+                        // এডিট মোড টেবিল রো কলাম আর্কিটেকচার (৮টি সঠিক কলাম)
                         tableRows += `
                             <tr id="row-${item.id}">
                                 <td><input type="text" class="row-edit-input edit-name" value="${item.name}"></td>
@@ -486,6 +490,7 @@
                             </tr>
                         `;
                     } else {
+                        // ডিসপ্লে মোড টেবিল রো কলাম আর্কিটেকচার (৮টি সঠিক কলাম)
                         tableRows += `
                             <tr id="row-${item.id}">
                                 <td>${item.name}</td>
@@ -510,6 +515,7 @@
                     }
                 });
 
+                // Headers কলাম এবং Rows কলামের সিকোয়েন্স একদম ফিক্সড করা হলো
                 contentDiv.innerHTML = `<div class="table-container"><table><thead><tr><th>নাম</th><th>টোকেন</th><th>খরচ</th><th>উপার্জন</th><th>লাভ/ক্ষতি</th><th>নোট (এডিটেবল)</th><th>অ্যাকাউন্ট হোল্ডার</th><th>অ্যাকশন</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
                 container.appendChild(header);
                 container.appendChild(contentDiv);
@@ -638,7 +644,7 @@
             });
         });
 
-        // 🚀 অফলাইন সার্ভিস ওয়ার্কার রেজিস্টার করার লজিক
+        // অফলাইন সার্ভিস ওয়ার্কার রেজিস্টার করার লজিক
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
