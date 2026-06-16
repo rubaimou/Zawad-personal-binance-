@@ -54,7 +54,7 @@
         /* মোবাইল রেসপন্সিভ ফর্ম */
         .input-container {
             background-color: #fff; padding: 15px; border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; box-sizing: border-box;
         }
 
@@ -73,12 +73,13 @@
             padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px;
         }
 
-        /* রিপোর্ট বাটন */
-        .report-trigger-btn {
-            background-color: #9b59b6; color: white; border: none; padding: 12px 25px;
-            border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; width: 100%; box-sizing: border-box;
+        /* ব্যাকআপ বাটন কন্টেইনার */
+        .backup-container {
+            display: flex; gap: 10px; width: 100%; margin-bottom: 15px; justify-content: center; flex-wrap: wrap;
         }
-        .report-trigger-btn:hover { background-color: #8e44ad; }
+        .backup-btn { background-color: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .restore-btn { background-color: #e67e22; color: white; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .report-trigger-btn { background-color: #9b59b6; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
 
         @media (min-width: 768px) {
             .input-container { display: flex; flex-wrap: nowrap; }
@@ -117,45 +118,34 @@
 
         /* নোট এডিটর */
         .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 130px; outline: none; white-space: normal; border: 1px dashed #f39c12; border-radius: 4px; padding: 6px; }
-        .editable-note:focus { background-color: #fff; border: 2px solid #3498db !important; font-style: normal; color: #000; }
-
-        /* অ্যাকাউন্ট হোল্ডার কাস্টম স্টাইলস (বাটন সহ কমপ্যাক্ট কন্টেইনার) */
+        
+        /* অ্যাকাউন্ট হোল্ডার */
         .holder-cell { background-color: #f0f7f4; display: flex; flex-direction: column; gap: 5px; min-width: 150px; border-radius: 4px; padding: 6px; }
-        .holder-status { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; cursor: pointer; }
+        .holder-status { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; }
         .status-paid { background-color: #d4edda; color: #155724; }
         .status-notpaid { background-color: #f8d7da; color: #721c24; }
         .holder-amount { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; width: 100%; box-sizing: border-box; outline: none; }
 
-        /* অ্যাকাউন্ট হোল্ডারের ভেতরের ইন-লাইন অ্যাকশন বাটনস */
+        /* বাটনস */
         .holder-btns { display: flex; gap: 5px; margin-top: 2px; width: 100%; }
         .delete-btn { flex: 1; background-color: #e74c3c; color: white; border: none; padding: 6px 0; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; text-align: center; }
-        .delete-btn:hover { background-color: #c0392b; }
         .edit-row-btn { flex: 1; background-color: #f39c12; color: white; border: none; padding: 6px 0; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; text-align: center; }
-        .edit-row-btn:hover { background-color: #d35400; }
         .save-row-btn { flex: 1; background-color: #27ae60; color: white; border: none; padding: 6px 0; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; text-align: center; }
-        .save-row-btn:hover { background-color: #219653; }
 
-        /* ইন-লাইন রো এডিটিং ইনপুটস */
         .row-edit-input { padding: 6px; border: 1px solid #3498db; border-radius: 4px; width: 90%; font-size: 13px; outline: none; }
-
         .profit { color: #27ae60; font-weight: bold; }
         .loss { color: #c0392b; font-weight: bold; }
         .neutral { color: #7f8c8d; font-weight: bold; }
+        .token-count-cell { font-weight: bold; color: #2c3e50; text-align: center; }
 
         /* পপ-আপ মডেল স্টাইল */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box;
-        }
-        .modal-content {
-            background-color: white; border-radius: 8px; padding: 20px; width: 100%; max-width: 850px;
-            max-height: 95%; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
+        .modal-content { background-color: white; border-radius: 8px; padding: 20px; width: 100%; max-width: 850px; max-height: 95%; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .modal-inputs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: #eee; padding: 10px; border-radius: 6px; }
         .modal-inputs input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1; min-width: 120px; }
         .modal-inputs button { background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-        /* স্ক্রিনশট ক্যাপচার এরিয়া স্টাইল (সম্পূর্ণ ইংলিশ থিম) */
+        /* স্ক্রিনশট ক্যাপচার এরিয়া */
         #reportCaptureArea { background: white; padding: 20px; border: 1px solid #ddd; border-radius: 6px; margin-top: 10px; width: 100%; box-sizing: border-box; font-family: Arial, sans-serif; }
         .capture-table-container { width: 100%; overflow-x: visible; background-color: #fff; }
         .capture-table-container table { width: 100%; min-width: 100%; table-layout: auto; border-collapse: collapse; }
@@ -186,6 +176,12 @@
             <button id="addBtn">এন্ট্রি করুন</button>
         </div>
 
+        <div class="backup-container">
+            <button class="backup-btn" id="exportBackupBtn">📥 সম্পূর্ণ ডাটা ব্যাকআপ ডাউনলোড করুন</button>
+            <button class="restore-btn" id="triggerFileBtn">📤 ব্যাকআপ ডাটা রিস্টোর (Restore) করুন</button>
+            <input type="file" id="importBackupFile" style="display: none;" accept=".json">
+        </div>
+
         <div id="loadingView">⏳ ক্লাউড ডাটাবেজ আপডেট হচ্ছে...</div>
 
         <button class="report-trigger-btn" id="openReportBtn">📋 নাম ও তারিখ অনুযায়ী রিপোর্ট ডাউনলোড</button>
@@ -202,13 +198,14 @@
                     <thead>
                         <tr>
                             <th>নাম</th>
+                            <th style="text-align: center;">মোট টোকেন এন্ট্রি</th>
                             <th>মোট খরচ</th>
                             <th>মোট উপার্জন</th>
                             <th>মোট লাভ / ক্ষতি</th>
                         </tr>
                     </thead>
                     <tbody id="summaryBody">
-                        <tr><td colspan="4" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>
+                        <tr><td colspan="5" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -306,7 +303,7 @@
 
         function strip(num) { return parseFloat(num.toPrecision(12)); }
 
-        // ফায়ারবেস থেকে ডাটা রিড করা
+        // ফায়ারবেস থেকে ডাটা রিড করা এবং লোকাল ব্যাকআপ রাখা
         function loadCloudData() {
             document.getElementById('loadingView').style.display = 'block';
             onValue(dbRef, (snapshot) => {
@@ -321,8 +318,19 @@
                             ...data[key] 
                         });
                     }
+                    localStorage.setItem('local_hisab_backup', JSON.stringify(allData));
+                } else {
+                    const localBackup = localStorage.getItem('local_hisab_backup');
+                    if (localBackup) { allData = JSON.parse(localBackup); }
                 }
                 renderAll();
+                document.getElementById('loadingView').style.display = 'none';
+            }, (error) => {
+                const localBackup = localStorage.getItem('local_hisab_backup');
+                if (localBackup) { 
+                    allData = JSON.parse(localBackup); 
+                    renderAll();
+                }
                 document.getElementById('loadingView').style.display = 'none';
             });
         }
@@ -361,7 +369,50 @@
             }).catch(err => alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err));
         });
 
-        // ক্লাউড থেকে ডাটা ডিলিট করা
+        // ফাইল ডাউনলোড ব্যাকআপ সিস্টেম
+        document.getElementById('exportBackupBtn').addEventListener('click', () => {
+            if(allData.length === 0) { alert("ব্যাকআপ নেওয়ার মতো কোনো ডাটা নেই!"); return; }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Zawad_Hisab_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        });
+
+        // ফাইল আপলোড করে রিস্টোর সিস্টেম
+        document.getElementById('triggerFileBtn').addEventListener('click', () => document.getElementById('importBackupFile').click());
+        document.getElementById('importBackupFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const importedData = JSON.parse(evt.target.result);
+                    if(Array.isArray(importedData)) {
+                        if(confirm("আপনি কি এই ব্যাকআপ ফাইলটি ফায়ারবেস ক্লাউডে আপলোড করে রিস্টোর করতে চান? (বর্তমান ক্লাউড ডাটা রিপ্লেস হতে পারে)")){
+                            importedData.forEach(item => {
+                                const restoreRef = item.id ? ref(db, `hisab_khata/${item.id}`) : push(dbRef);
+                                set(restoreRef, {
+                                    date: item.date,
+                                    name: item.name,
+                                    token: item.token,
+                                    expense: item.expense,
+                                    income: item.income,
+                                    note: item.note || "ক্লিক করে নোট লিখুন...",
+                                    paidStatus: item.paidStatus || "notpaid",
+                                    paidAmount: item.paidAmount || "0"
+                                });
+                            });
+                            alert("ডাটা সফলভাবে ক্লাউডে রিস্টোর করা হয়েছে!");
+                        }
+                    } else { alert("ভুল ফাইল ফরম্যাট! সঠিক ব্যাকআপ ফাইল সিলেক্ট করুন।"); }
+                } catch(err) { alert("ফাইলটি পড়তে সমস্যা হয়েছে!"); }
+            };
+            reader.readAsText(file);
+        });
+
         window.deleteEntry = function(id) {
             if(confirm("আপনি কি নিশ্চিতভাবে এই এন্ট্রিটি মুছতে চান?")) {
                 const itemRef = ref(db, `hisab_khata/${id}`);
@@ -369,13 +420,8 @@
             }
         }
 
-        // ইন-লাইন রো এডিটিং ট্রিগার করা
-        window.editRowMode = function(id) {
-            editingRowId = id;
-            renderAll();
-        }
+        window.editRowMode = function(id) { editingRowId = id; renderAll(); }
 
-        // এডিট করা রো ক্লাউডে আপডেট করা
         window.saveRowChanges = function(id) {
             const rowElement = document.getElementById(`row-${id}`);
             const updatedName = rowElement.querySelector('.edit-name').value.trim();
@@ -383,10 +429,7 @@
             const updatedExpense = parseFloat(rowElement.querySelector('.edit-expense').value) || 0;
             const updatedIncome = parseFloat(rowElement.querySelector('.edit-income').value) || 0;
 
-            if (updatedName === "" || updatedToken === "") {
-                alert("নাম এবং টোকেন ফাঁকা রাখা যাবে না!");
-                return;
-            }
+            if (updatedName === "" || updatedToken === "") { alert("নাম এবং টোকেন ফাঁকা রাখা যাবে না!"); return; }
 
             const itemRef = ref(db, `hisab_khata/${id}`);
             update(itemRef, {
@@ -394,19 +437,14 @@
                 token: updatedToken,
                 expense: updatedExpense,
                 income: updatedIncome
-            }).then(() => {
-                editingRowId = null;
-                renderAll();
-            });
+            }).then(() => { editingRowId = null; renderAll(); });
         }
 
-        // ক্লাউডে নোট আপডেট করা
         window.updateNote = function(id, updatedText) {
             const itemRef = ref(db, `hisab_khata/${id}`);
             update(itemRef, { note: updatedText });
         }
 
-        // অ্যাকাউন্ট হোল্ডার ম্যানুয়াল আপডেট
         window.updateHolderStatus = function(id, statusValue) {
             const itemRef = ref(db, `hisab_khata/${id}`);
             update(itemRef, { paidStatus: statusValue });
@@ -467,7 +505,6 @@
                     const selectClass = item.paidStatus === 'paid' ? 'status-paid' : 'status-notpaid';
 
                     if (editingRowId === item.id) {
-                        // এডিট মোড: অ্যাকশন কলাম সম্পূর্ণ আউট, বাটন এখন অ্যাকাউন্ট হোল্ডার কলামের নিচে কমপ্যাক্ট আকারে
                         tableRows += `
                             <tr id="row-${item.id}">
                                 <td><input type="text" class="row-edit-input edit-name" value="${item.name}"></td>
@@ -492,7 +529,6 @@
                             </tr>
                         `;
                     } else {
-                        // ডিসপ্লে মোড: অ্যাকশন কলাম আউট, বাটন এখন অ্যাকাউন্ট হোল্ডার কলামের নিচে কমপ্যাক্ট আকারে
                         tableRows += `
                             <tr id="row-${item.id}">
                                 <td>${item.name}</td>
@@ -519,26 +555,31 @@
                     }
                 });
 
-                // টেবিল হেডার থেকে অ্যাকশন হেডারটি মুছে ফেলা হলো (মোট কলাম এখন ৭টি)
                 contentDiv.innerHTML = `<div class="table-container"><table><thead><tr><th>নাম</th><th>টোকেন</th><th>খরচ</th><th>উপার্জন</th><th>লাভ/ক্ষতি</th><th>নোট (এডিটেবল)</th><th>অ্যাকাউন্ট হোল্ডার</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
                 container.appendChild(header);
                 container.appendChild(contentDiv);
             });
         }
 
+        // নাম ভিত্তিক সামারি টেবিলে ডাইনামিক টোকেন কাউন্ট করার লজিক
         function renderSummaryTable() {
             const summaryBody = document.getElementById('summaryBody');
             const summaryMap = {};
+            
             allData.forEach(item => {
                 const lowerName = item.name.toLowerCase();
-                if (!summaryMap[lowerName]) { summaryMap[lowerName] = { originalName: item.name, totalExpense: 0, totalIncome: 0 }; }
+                if (!summaryMap[lowerName]) { 
+                    summaryMap[lowerName] = { originalName: item.name, totalExpense: 0, totalIncome: 0, tokenCount: 0 }; 
+                }
                 summaryMap[lowerName].totalExpense = strip(summaryMap[lowerName].totalExpense + item.expense);
                 summaryMap[lowerName].totalIncome = strip(summaryMap[lowerName].totalIncome + item.income);
+                summaryMap[lowerName].tokenCount += 1; // প্রতিটা রো এন্ট্রির জন্য ১ করে যোগ হবে
             });
+
             summaryBody.innerHTML = "";
             const keys = Object.keys(summaryMap);
             if (keys.length === 0) {
-                summaryBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>`;
+                summaryBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7f8c8d; white-space: normal;">এখনো কোনো ডাটা এন্ট্রি করা হয়নি</td></tr>`;
                 return;
             }
             keys.forEach(key => {
@@ -548,17 +589,21 @@
                 let sumClass = netSummary > 0 ? "profit" : netSummary < 0 ? "loss" : "neutral";
 
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${user.originalName}</td><td>${user.totalExpense}</td><td>${user.totalIncome}</td><td class="${sumClass}">${sumText}</td>`;
+                row.innerHTML = `
+                    <td>${user.originalName}</td>
+                    <td class="token-count-cell">${user.tokenCount} টি</td>
+                    <td>${user.totalExpense}</td>
+                    <td>${user.totalIncome}</td>
+                    <td class="${sumClass}">${sumText}</td>
+                `;
                 summaryBody.appendChild(row);
             });
         }
 
-        // মডেল ও সামারি কন্ট্রোল ট্র্রিগারস
         document.getElementById('openReportBtn').addEventListener('click', () => document.getElementById('reportModal').style.display = 'flex');
         document.getElementById('closeReportBtn').addEventListener('click', () => document.getElementById('reportModal').style.display = 'none');
         document.getElementById('summaryHeader').addEventListener('click', function() { toggleSection('summaryContent', this); });
 
-        // ফিল্টারড রিপোর্ট জেনারেশন (স্ক্রিনশটের জন্য সম্পূর্ণ ইংরেজি রূপান্তর)
         document.getElementById('filterSubmitBtn').addEventListener('click', () => {
             const fName = document.getElementById('filterName').value.trim().toLowerCase();
             const sDate = document.getElementById('filterStartDate').value;
@@ -616,11 +661,9 @@
             document.getElementById('downloadReportBtn').style.display = 'block';
         });
 
-        // ইমেজ ডাউনলোড লজিক
         document.getElementById('downloadReportBtn').addEventListener('click', () => {
             const targetArea = document.getElementById('reportCaptureArea');
             const downloadBtn = document.getElementById('downloadReportBtn');
-            
             downloadBtn.innerText = "Processing Image...";
             downloadBtn.disabled = true;
 
@@ -634,11 +677,9 @@
                 const image = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
                 const name = document.getElementById('filterName').value.trim();
-                
                 link.download = `${name}_statement_report.png`;
                 link.href = image;
                 link.click();
-
                 downloadBtn.innerText = "📥 ছবি হিসেবে গ্যালারিতে সেভ করুন";
                 downloadBtn.disabled = false;
             }).catch(err => {
@@ -648,12 +689,11 @@
             });
         });
 
-        // অফলাইন сервис ওয়ার্কার রেজিস্টার করার লজিক
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('Service Worker Registered Successfully!', reg))
-                    .catch(err => console.log('Service Worker Registration Failed:', err));
+                    .then(reg => console.log('Service Worker Registered!', reg))
+                    .catch(err => console.log('Service Worker Reg Failed:', err));
             });
         }
     </script>
