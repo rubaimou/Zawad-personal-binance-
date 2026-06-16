@@ -119,7 +119,7 @@
         /* নোট এডিটর */
         .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 130px; outline: none; white-space: normal; border: 1px dashed #f39c12; border-radius: 4px; padding: 6px; }
         
-        /* অ্যাকাউন্ট হোল্ডার */
+        /* অ্যাকাউন্ট হোল্ডার কন্টেইনার */
         .holder-cell { background-color: #f0f7f4; display: flex; flex-direction: column; gap: 5px; min-width: 150px; border-radius: 4px; padding: 6px; }
         .holder-status { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; }
         .status-paid { background-color: #d4edda; color: #155724; }
@@ -573,7 +573,7 @@
                 }
                 summaryMap[lowerName].totalExpense = strip(summaryMap[lowerName].totalExpense + item.expense);
                 summaryMap[lowerName].totalIncome = strip(summaryMap[lowerName].totalIncome + item.income);
-                summaryMap[lowerName].tokenCount += 1; // প্রতিটা রো এন্ট্রির জন্য ১ করে যোগ হবে
+                summaryMap[lowerName].tokenCount += 1;
             });
 
             summaryBody.innerHTML = "";
