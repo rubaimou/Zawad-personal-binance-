@@ -119,7 +119,7 @@
         /* নোট এডিটর */
         .editable-note { background-color: #fffdf0; cursor: pointer; font-style: italic; color: #555; min-width: 130px; outline: none; white-space: normal; border: 1px dashed #f39c12; border-radius: 4px; padding: 6px; }
         
-        /* অ্যাকাউন্ট হোল্ডার কন্টেইনার */
+        /* অ্যাকাউন্ট হোল্ডার */
         .holder-cell { background-color: #f0f7f4; display: flex; flex-direction: column; gap: 5px; min-width: 150px; border-radius: 4px; padding: 6px; }
         .holder-status { padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 12px; font-weight: bold; width: 100%; outline: none; }
         .status-paid { background-color: #d4edda; color: #155724; }
@@ -136,7 +136,9 @@
         .profit { color: #27ae60; font-weight: bold; }
         .loss { color: #c0392b; font-weight: bold; }
         .neutral { color: #7f8c8d; font-weight: bold; }
-        .token-count-cell { font-weight: bold; color: #2c3e50; text-align: center; }
+        
+        /* টোকেন লিস্ট কলাম স্টাইল */
+        .token-list-cell { font-weight: 500; color: #2c3e50; white-space: normal; max-width: 200px; line-height: 1.4; font-size: 13px; }
 
         /* পপ-আপ মডেল স্টাইল */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
@@ -198,7 +200,7 @@
                     <thead>
                         <tr>
                             <th>নাম</th>
-                            <th style="text-align: center;">মোট টোকেন এন্ট্রি</th>
+                            <th>এন্ট্রি করা টোকেনসমূহ</th>
                             <th>মোট খরচ</th>
                             <th>মোট উপার্জন</th>
                             <th>মোট লাভ / ক্ষতি</th>
@@ -561,7 +563,7 @@
             });
         }
 
-        // নাম ভিত্তিক সামারি টেবিলে ডাইনামিক টোকেন কাউন্ট করার লজিক
+        // নতুন মডিফাইড লজিক: টোকেন কাউন্টের বদলে সরাসরি টোকেনগুলোর নাম কমা দিয়ে লিস্ট আকারে দেখাবে
         function renderSummaryTable() {
             const summaryBody = document.getElementById('summaryBody');
             const summaryMap = {};
@@ -569,11 +571,15 @@
             allData.forEach(item => {
                 const lowerName = item.name.toLowerCase();
                 if (!summaryMap[lowerName]) { 
-                    summaryMap[lowerName] = { originalName: item.name, totalExpense: 0, totalIncome: 0, tokenCount: 0 }; 
+                    summaryMap[lowerName] = { originalName: item.name, totalExpense: 0, totalIncome: 0, tokens: [] }; 
                 }
                 summaryMap[lowerName].totalExpense = strip(summaryMap[lowerName].totalExpense + item.expense);
                 summaryMap[lowerName].totalIncome = strip(summaryMap[lowerName].totalIncome + item.income);
-                summaryMap[lowerName].tokenCount += 1;
+                
+                // টোকেনের নাম যদি অলরেডি লিস্টে না থাকে তবেই অ্যাড করবে (ডুপ্লিকেট এড়াতে)
+                if(!summaryMap[lowerName].tokens.includes(item.token)) {
+                    summaryMap[lowerName].tokens.push(item.token);
+                }
             });
 
             summaryBody.innerHTML = "";
@@ -588,10 +594,13 @@
                 let sumText = netSummary > 0 ? `+${netSummary}` : `${netSummary}`;
                 let sumClass = netSummary > 0 ? "profit" : netSummary < 0 ? "loss" : "neutral";
 
+                // টোকেন এর অ্যারে-কে কমা যুক্ত টেক্সট স্ট্র্রিং-এ রূপান্তর করা হলো
+                const tokenListText = user.tokens.join(', ');
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.originalName}</td>
-                    <td class="token-count-cell">${user.tokenCount} টি</td>
+                    <td class="token-list-cell">${tokenListText}</td>
                     <td>${user.totalExpense}</td>
                     <td>${user.totalIncome}</td>
                     <td class="${sumClass}">${sumText}</td>
