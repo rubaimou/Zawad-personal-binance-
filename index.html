@@ -138,7 +138,7 @@
         .neutral { color: #7f8c8d; font-weight: bold; }
         
         /* টোকেন লিস্ট কলাম স্টাইল */
-        .token-list-cell { font-weight: 500; color: #2c3e50; white-space: normal; max-width: 200px; line-height: 1.4; font-size: 13px; }
+        .token-list-cell { font-weight: bold; color: #2c3e50; white-space: normal; max-width: 200px; line-height: 1.4; font-size: 13px; text-align: left; background-color: #fcfcfc; }
 
         /* পপ-আপ মডেল স্টাইল */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
@@ -317,6 +317,7 @@
                             id: key, 
                             paidStatus: "notpaid",
                             paidAmount: "0",
+                            token: "", // পুরোনো এম্পটি ডাটা হ্যান্ডেল করার সেফটি চেক
                             ...data[key] 
                         });
                     }
@@ -399,7 +400,7 @@
                                 set(restoreRef, {
                                     date: item.date,
                                     name: item.name,
-                                    token: item.token,
+                                    token: item.token || "",
                                     expense: item.expense,
                                     income: item.income,
                                     note: item.note || "ক্লিক করে নোট লিখুন...",
@@ -505,6 +506,7 @@
                     let resultText = netResult > 0 ? `+${netResult}` : `${netResult}`;
                     let resultClass = netResult > 0 ? "profit" : netResult < 0 ? "loss" : "neutral";
                     const selectClass = item.paidStatus === 'paid' ? 'status-paid' : 'status-notpaid';
+                    const displayToken = item.token || "-";
 
                     if (editingRowId === item.id) {
                         tableRows += `
@@ -534,7 +536,7 @@
                         tableRows += `
                             <tr id="row-${item.id}">
                                 <td>${item.name}</td>
-                                <td>${item.token}</td>
+                                <td>${displayToken}</td>
                                 <td>${item.expense}</td>
                                 <td>${item.income}</td>
                                 <td class="${resultClass}">${resultText}</td>
@@ -563,7 +565,7 @@
             });
         }
 
-        // নতুন মডিফাইড লজিক: টোকেন কাউন্টের বদলে সরাসরি টোকেনগুলোর নাম কমা দিয়ে লিস্ট আকারে দেখাবে
+        // সামারি টেবিল জেনারেশন লজিক (৫টি কলাম ফিক্সড)
         function renderSummaryTable() {
             const summaryBody = document.getElementById('summaryBody');
             const summaryMap = {};
@@ -576,9 +578,11 @@
                 summaryMap[lowerName].totalExpense = strip(summaryMap[lowerName].totalExpense + item.expense);
                 summaryMap[lowerName].totalIncome = strip(summaryMap[lowerName].totalIncome + item.income);
                 
-                // টোকেনের নাম যদি অলরেডি লিস্টে না থাকে তবেই অ্যাড করবে (ডুপ্লিকেট এড়াতে)
-                if(!summaryMap[lowerName].tokens.includes(item.token)) {
-                    summaryMap[lowerName].tokens.push(item.token);
+                // যদি কোনো টোকেন নাম দেওয়া থাকে, তবে সেটি জমা করবে
+                if(item.token && item.token.trim() !== "") {
+                    if(!summaryMap[lowerName].tokens.includes(item.token.trim())) {
+                        summaryMap[lowerName].tokens.push(item.token.trim());
+                    }
                 }
             });
 
@@ -594,8 +598,8 @@
                 let sumText = netSummary > 0 ? `+${netSummary}` : `${netSummary}`;
                 let sumClass = netSummary > 0 ? "profit" : netSummary < 0 ? "loss" : "neutral";
 
-                // টোকেন এর অ্যারে-কে কমা যুক্ত টেক্সট স্ট্র্রিং-এ রূপান্তর করা হলো
-                const tokenListText = user.tokens.join(', ');
+                // টোকেন না থাকলে ড্যাশ (-) দেখাবে
+                const tokenListText = user.tokens.length > 0 ? user.tokens.join(', ') : '-';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -649,7 +653,7 @@
                 let noteDisplay = item.note;
                 if(noteDisplay === "ক্লিক করে নোট লিখুন...") { noteDisplay = "No notes added"; }
 
-                rowsHtml += `<tr><td>${item.date}</td><td>${item.token}</td><td>${item.expense}</td><td>${item.income}</td><td class="${rClass}">${rText}</td><td style="white-space:normal;">${noteDisplay}</td><td style="font-weight:bold;">${holderFullDetails}</td></tr>`;
+                rowsHtml += `<tr><td>${item.date}</td><td>${item.token || '-'}</td><td>${item.expense}</td><td>${item.income}</td><td class="${rClass}">${rText}</td><td style="white-space:normal;">${noteDisplay}</td><td style="font-weight:bold;">${holderFullDetails}</td></tr>`;
             });
 
             const netTotal = strip(totalInc - totalExp);
